@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -174,6 +175,20 @@
                             </select>
                         </div>
 
+                        <!-- 豁免 / 指定參與成員功能 -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="text-xs font-semibold text-slate-600">參與平分成員 (未勾選即豁免/免費)</label>
+                                <div class="space-x-2">
+                                    <button type="button" onclick="selectAllParticipants(true)" class="text-[11px] text-blue-600 hover:underline">全選</button>
+                                    <button type="button" onclick="selectAllParticipants(false)" class="text-[11px] text-slate-400 hover:underline">全不選</button>
+                                </div>
+                            </div>
+                            <div id="participantCheckboxes" class="grid grid-cols-2 gap-2 p-3 bg-slate-50 border border-slate-200 rounded-lg max-h-36 overflow-y-auto">
+                                <!-- Participant checkboxes rendered here -->
+                            </div>
+                        </div>
+
                         <button type="submit" id="submitExpBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm py-2.5 rounded-lg transition shadow-sm">
                             <i class="fa-solid fa-plus-circle mr-1"></i> 加入帳單記錄
                         </button>
@@ -191,7 +206,7 @@
                         <span><i class="fa-solid fa-chart-pie text-emerald-500 mr-2"></i>智慧結算結果</span>
                         <span id="settlementBaseCurrencyBadge" class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1 rounded-full"></span>
                     </h2>
-                    <p class="text-xs text-slate-500 mb-4">系統會根據各筆消費當時的匯率自動折算為基準幣別並公平平分</p>
+                    <p class="text-xs text-slate-500 mb-4">系統會根據各筆消費當時的匯率與實際參與人數自動平分</p>
                     
                     <div id="balancesContainer" class="space-y-3">
                         <!-- Settlement balances list rendered here -->
@@ -210,7 +225,7 @@
                     </div>
                 </div>
 
-                <!-- 7. Change History / Audit Log (Key Multi-user Feature) -->
+                <!-- 7. Change History / Audit Log -->
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                     <h2 class="text-sm font-bold text-slate-800 mb-2 flex items-center justify-between">
                         <span><i class="fa-solid fa-clock-rotate-left text-purple-500 mr-2"></i>成員修改履歷 (共用紀錄)</span>
@@ -354,7 +369,7 @@
                     statusEl.className = "text-sm font-bold text-emerald-600";
                 }
             } catch (err) {
-                statusEl.textContent = "使用預設預設匯率";
+                statusEl.textContent = "使用預設匯率";
                 statusEl.className = "text-sm font-bold text-amber-600";
             }
             renderUI();
@@ -410,17 +425,40 @@
                 `<option value="${c.code}" ${c.code === trip.baseCurrencyCode ? 'selected' : ''}>${c.name}</option>`
             ).join("");
 
-            // 4. Render Form Currency & Payer Selects
+            // 4. Render Form Currency, Payer & Participant Checkboxes
             const expCurrency = document.getElementById("expCurrency");
             expCurrency.innerHTML = currencies.map(c => 
                 `<option value="${c.code}" ${c.code === "CNY" ? 'selected' : ''}>${c.name}</option>`
             ).join("");
 
             const expPayer = document.getElementById("expPayer");
+            const participantContainer = document.getElementById("participantCheckboxes");
+
             if (trip.people && trip.people.length > 0) {
                 expPayer.innerHTML = trip.people.map(p => `<option value="${p}">${p}</option>`).join("");
+                
+                // 渲染平分成員的 Checkbox（預設全選）
+                const editingId = document.getElementById("editingExpenseId").value;
+                let activeParticipants = trip.people;
+                if (editingId) {
+                    const currentExp = trip.expenses.find(x => x.id === editingId);
+                    if (currentExp && currentExp.participants) {
+                        activeParticipants = currentExp.participants;
+                    }
+                }
+
+                participantContainer.innerHTML = trip.people.map(p => {
+                    const isChecked = activeParticipants.includes(p) ? 'checked' : '';
+                    return `
+                        <label class="inline-flex items-center gap-2 text-xs text-slate-700 font-medium cursor-pointer select-none">
+                            <input type="checkbox" name="expParticipants" value="${p}" ${isChecked} class="w-3.5 h-3.5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span>${p}</span>
+                        </label>
+                    `;
+                }).join("");
             } else {
                 expPayer.innerHTML = `<option value="">請先新增成員</option>`;
+                participantContainer.innerHTML = `<div class="text-xs text-slate-400 col-span-2">請先新增成員</div>`;
             }
 
             // 5. Render Expense List
@@ -432,10 +470,21 @@
                 expensesList.innerHTML = trip.expenses.map((exp) => {
                     const rateText = `1 ${exp.currencyCode} = ${(exp.capturedRateToBase || 1).toFixed(4)} ${baseCurr.code}`;
                     const editedText = exp.lastUpdatedBy ? `<span class="text-[10px] text-purple-600 block mt-0.5"><i class="fa-solid fa-pen-to-square"></i> 由 ${exp.lastUpdatedBy} 修改於 ${exp.lastUpdatedAt || ''}</span>` : '';
+                    
+                    // 顯示參與平分成員標籤 (若有豁免者)
+                    const participants = exp.participants || trip.people;
+                    const exemptCount = trip.people.length - participants.length;
+                    const participantBadge = exemptCount > 0 
+                        ? `<span class="inline-block bg-amber-50 border border-amber-200 text-amber-700 text-[10px] px-1.5 py-0.5 rounded ml-1 font-semibold">${participants.length} 人平分 (${exemptCount} 人豁免)</span>` 
+                        : `<span class="text-[10px] text-slate-400 ml-1">(全員平分)</span>`;
+
                     return `
                         <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center justify-between hover:border-slate-300 transition">
                             <div>
-                                <div class="text-sm font-bold text-slate-800">${exp.title}</div>
+                                <div class="text-sm font-bold text-slate-800 flex items-center flex-wrap">
+                                    <span>${exp.title}</span>
+                                    ${participantBadge}
+                                </div>
                                 <div class="text-xs text-slate-500 mt-0.5">
                                     <span class="font-medium text-slate-700">付款人: ${exp.payer}</span> · ${rateText}
                                 </div>
@@ -468,6 +517,11 @@
             renderHistoryLogs();
         }
 
+        function selectAllParticipants(select) {
+            const checkboxes = document.querySelectorAll('input[name="expParticipants"]');
+            checkboxes.forEach(cb => cb.checked = select);
+        }
+
         // --- Settlement Balance Calculation ---
         function renderSettlements() {
             const trip = getCurrentTrip();
@@ -483,16 +537,24 @@
             const balances = {};
             trip.people.forEach(p => balances[p] = 0.0);
 
-            // Calculate AA splitting
+            // Calculate AA splitting considering exemption/selected participants
             trip.expenses.forEach(exp => {
                 const amountInBase = exp.amount * (exp.capturedRateToBase || 1.0);
-                const splitPerPerson = amountInBase / trip.people.length;
+                const participants = (exp.participants && exp.participants.length > 0) ? exp.participants : trip.people;
+                
+                // 只有勾選參與的人才需要負擔平分金額
+                const splitPerPerson = amountInBase / participants.length;
 
+                // 付款人先收到全額補償
                 if (balances.hasOwnProperty(exp.payer)) {
                     balances[exp.payer] += amountInBase;
                 }
-                trip.people.forEach(p => {
-                    balances[p] -= splitPerPerson;
+                
+                // 扣除參與者的應付金額
+                participants.forEach(p => {
+                    if (balances.hasOwnProperty(p)) {
+                        balances[p] -= splitPerPerson;
+                    }
                 });
             });
 
@@ -535,7 +597,6 @@
                 action: actionDetail
             });
 
-            // Keep max 50 log items
             if (trip.historyLogs.length > 50) trip.historyLogs.pop();
         }
 
@@ -575,8 +636,17 @@
             const currencyCode = document.getElementById("expCurrency").value;
             const payer = document.getElementById("expPayer").value;
 
+            // 取得被勾選的參與平分成員
+            const checkedBoxes = document.querySelectorAll('input[name="expParticipants"]:checked');
+            const selectedParticipants = Array.from(checkedBoxes).map(cb => cb.value);
+
             if (!title || isNaN(amount) || amount <= 0 || !payer) {
                 alert("請完整填寫項目名稱、有效金額與付款人");
+                return;
+            }
+
+            if (selectedParticipants.length === 0) {
+                alert("請至少選擇 1 位參與平分的成員！");
                 return;
             }
 
@@ -599,11 +669,12 @@
                         currencyCode: currObj.code,
                         currencySymbol: currObj.symbol,
                         payer,
+                        participants: selectedParticipants,
                         capturedRateToBase: rateToBase,
                         lastUpdatedBy: currentUser,
                         lastUpdatedAt: nowStr
                     };
-                    logChange(`修改了帳單「${title}」(${currObj.symbol}${amount})`);
+                    logChange(`修改了帳單「${title}」(${currObj.symbol}${amount}, ${selectedParticipants.length}人平分)`);
                 }
             } else {
                 // Add New Expense
@@ -614,12 +685,13 @@
                     currencyCode: currObj.code,
                     currencySymbol: currObj.symbol,
                     payer,
+                    participants: selectedParticipants,
                     capturedRateToBase: rateToBase,
                     createdBy: currentUser,
                     createdAt: nowStr
                 };
                 trip.expenses.push(newExp);
-                logChange(`新增了帳單「${title}」(${currObj.symbol}${amount}, 付款人: ${payer})`);
+                logChange(`新增了帳單「${title}」(${currObj.symbol}${amount}, 付款人: ${payer}, ${selectedParticipants.length}人平分)`);
             }
 
             resetExpenseForm();
@@ -637,6 +709,9 @@
             document.getElementById("expCurrency").value = exp.currencyCode;
             document.getElementById("expPayer").value = exp.payer;
 
+            // 重新渲染勾選框狀態
+            renderUI();
+
             document.getElementById("formTitle").innerHTML = `<i class="fa-solid fa-pen-to-square text-purple-500 mr-2"></i>編輯帳單項目`;
             document.getElementById("submitExpBtn").innerHTML = `<i class="fa-solid fa-check-circle mr-1"></i> 儲存修訂內容`;
             document.getElementById("cancelEditBtn").classList.remove("hidden");
@@ -648,6 +723,7 @@
             document.getElementById("formTitle").innerHTML = `<i class="fa-solid fa-receipt text-indigo-500 mr-2"></i>4. 新增一筆消費帳單`;
             document.getElementById("submitExpBtn").innerHTML = `<i class="fa-solid fa-plus-circle mr-1"></i> 加入帳單記錄`;
             document.getElementById("cancelEditBtn").classList.add("hidden");
+            renderUI();
         }
 
         function removeExpense(id) {
@@ -823,7 +899,6 @@
                 });
 
                 if (res.status === 404) {
-                    // File doesn't exist yet, upload current initial state
                     updateSyncStatusBadge("syncing", "建立雲端資料檔...");
                     await uploadToGitHub("初始化 GitHub Travel AA 雲端帳單");
                     return;
@@ -832,9 +907,8 @@
                 if (!res.ok) throw new Error(`HTTP error ${res.status}`);
 
                 const fileData = await res.json();
-                githubConfig.fileSha = fileData.sha; // Save SHA for updates
+                githubConfig.fileSha = fileData.sha;
 
-                // UTF-8 Base64 Decode
                 const jsonText = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
                 const remoteState = JSON.parse(jsonText);
 
@@ -860,7 +934,6 @@
             const url = `https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.path}`;
 
             try {
-                // Ensure we have current file SHA if missing
                 if (!githubConfig.fileSha) {
                     const checkRes = await fetch(url, {
                         headers: { "Authorization": `Bearer ${githubConfig.token}` }
@@ -871,7 +944,6 @@
                     }
                 }
 
-                // UTF-8 Base64 Encode
                 const jsonString = JSON.stringify(appState, null, 2);
                 const contentEncoded = btoa(unescape(encodeURIComponent(jsonString)));
 
@@ -922,4 +994,3 @@
     </script>
 </body>
 </html>
-'''
