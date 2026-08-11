@@ -140,10 +140,34 @@
           "capturedRateToBase": 0.049470395835972895,
           "createdBy": "Camy",
           "createdAt": "11/08/2026, 22:45:17"
+        },
+        {
+          "id": "exp_1786459793584_r5gl",
+          "title": "水陸巴士",
+          "amount": 18000,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Camy",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "Maggie"
+          ],
+          "capturedRateToBase": 0.049470395835972895,
+          "createdBy": "Camy",
+          "createdAt": "11/08/2026, 22:49:53"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/11 22:49",
+          "user": "Camy",
+          "action": "新增了帳單「水陸巴士」(¥18000, 付款人: Camy, 6人平分)"
+        },
         {
           "timestamp": "8/11 22:45",
           "user": "Camy",
