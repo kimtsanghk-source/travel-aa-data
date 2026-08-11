@@ -14,11 +14,17 @@
     {
       "tripName": "TEST",
       "people": [
-        "Kim"
+        "Kim",
+        "Meiling"
       ],
       "expenses": [],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/11 20:28",
+          "user": "Kim",
+          "action": "新增了成員「Meiling」"
+        },
         {
           "timestamp": "8/11 20:28",
           "user": "Kim",
