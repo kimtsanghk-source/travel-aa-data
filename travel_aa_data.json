@@ -50,10 +50,34 @@
           "capturedRateToBase": 1.1627820267686426,
           "createdBy": "Bagel",
           "createdAt": "11/8/2026 下午9:08:44"
+        },
+        {
+          "id": "exp_1786453930249_drsa",
+          "title": "Ticket",
+          "amount": 85695,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Kim",
+          "participants": [
+            "Kim",
+            "Meiling",
+            "Ragen",
+            "Camy",
+            "Ivan",
+            "Maggie"
+          ],
+          "capturedRateToBase": 0.049470395835972895,
+          "createdBy": "Kim",
+          "createdAt": "2026/8/11 下午9:12:10"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/11 21:12",
+          "user": "Kim",
+          "action": "新增了帳單「Ticket」(¥85695, 付款人: Kim, 6人平分)"
+        },
         {
           "timestamp": "8/11 21:08",
           "user": "Bagel",
