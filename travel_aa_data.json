@@ -113,11 +113,17 @@
     {
       "tripName": "Tokyo",
       "people": [
-        "Camy"
+        "Camy",
+        "Ragen"
       ],
       "expenses": [],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/11 22:44",
+          "user": "Camy",
+          "action": "新增了成員「Ragen」"
+        },
         {
           "timestamp": "8/11 22:44",
           "user": "Camy",
