@@ -1,5 +1,5 @@
 {
-  "currentIndex": 0,
+  "currentIndex": 1,
   "trips": [
     {
       "tripName": "TEST",
@@ -107,6 +107,21 @@
           "timestamp": "8/11 20:28",
           "user": "Kim",
           "action": "建立了新行程「TEST」"
+        }
+      ]
+    },
+    {
+      "tripName": "Tokyo",
+      "people": [
+        "Camy"
+      ],
+      "expenses": [],
+      "baseCurrencyCode": "HKD",
+      "historyLogs": [
+        {
+          "timestamp": "8/11 22:44",
+          "user": "Camy",
+          "action": "建立了新行程「Tokyo」"
         }
       ]
     }
