@@ -16,11 +16,17 @@
       "people": [
         "Kim",
         "Meiling",
-        "Ragen"
+        "Ragen",
+        "Camy"
       ],
       "expenses": [],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/11 20:29",
+          "user": "Kim",
+          "action": "新增了成員「Camy」"
+        },
         {
           "timestamp": "8/11 20:28",
           "user": "Kim",
