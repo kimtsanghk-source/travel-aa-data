@@ -18,7 +18,8 @@
         "Meiling",
         "Ragen",
         "Camy",
-        "Ivan"
+        "Ivan",
+        "Maggie"
       ],
       "expenses": [
         {
@@ -35,6 +36,11 @@
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/11 21:06",
+          "user": "Kim",
+          "action": "新增了成員「Maggie」"
+        },
         {
           "timestamp": "8/11 20:36",
           "user": "Bagel",
