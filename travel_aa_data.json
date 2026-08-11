@@ -17,7 +17,8 @@
         "Kim",
         "Meiling",
         "Ragen",
-        "Camy"
+        "Camy",
+        "Ivan"
       ],
       "expenses": [
         {
@@ -34,6 +35,11 @@
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/11 20:36",
+          "user": "Bagel",
+          "action": "新增了成員「Ivan」"
+        },
         {
           "timestamp": "8/11 20:29",
           "user": "Kim",
