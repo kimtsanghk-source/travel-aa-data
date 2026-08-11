@@ -1,0 +1,15 @@
+{
+  "currentIndex": 0,
+  "trips": [
+    {
+      "tripName": "預設旅行",
+      "people": [
+        "Alice",
+        "Bob"
+      ],
+      "expenses": [],
+      "baseCurrencyCode": "HKD",
+      "historyLogs": []
+    }
+  ]
+}
