@@ -121,9 +121,34 @@
         "6b",
         "Maggie"
       ],
-      "expenses": [],
+      "expenses": [
+        {
+          "id": "exp_1786459517344_0amv",
+          "title": "橫濱dinner charge",
+          "amount": 880,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Camy",
+          "participants": [
+            "Camy",
+            "Ragen",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b"
+          ],
+          "capturedRateToBase": 0.049470395835972895,
+          "createdBy": "Camy",
+          "createdAt": "11/08/2026, 22:45:17"
+        }
+      ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/11 22:45",
+          "user": "Camy",
+          "action": "新增了帳單「橫濱dinner charge」(¥880, 付款人: Camy, 6人平分)"
+        },
         {
           "timestamp": "8/11 22:45",
           "user": "Camy",
