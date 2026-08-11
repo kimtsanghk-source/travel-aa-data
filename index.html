@@ -1,0 +1,931 @@
+code = '''<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✈️ 跨國旅行 AA 記帳中心 (GitHub 雲端共享版)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 pb-12">
+
+    <!-- Header / Navbar -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid font-bold fa-plane-departure text-blue-400 text-2xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide">跨國旅行 AA 記帳中心</h1>
+                    <p class="text-xs text-slate-400">GitHub 雲端共用 & 即時變更追蹤</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <!-- User name input -->
+                <div class="flex items-center bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-700">
+                    <i class="fa-solid fa-user text-slate-400 text-sm mr-2"></i>
+                    <input type="text" id="usernameInput" placeholder="你的名字 (如: Bob)" 
+                        class="bg-transparent text-sm text-white focus:outline-none w-28" onchange="saveUserProfile()">
+                </div>
+                <!-- Sync status tag -->
+                <div id="syncStatus" class="flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 text-amber-400 border border-slate-700">
+                    <i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i> 尚未設定 GitHub
+                </div>
+                <!-- GitHub Settings Modal Trigger -->
+                <button onclick="toggleModal('githubModal')" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+                    <i class="fa-brands fa-github"></i> 雲端同步設定
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-6">
+        <!-- Top Toolbar & Alert Banner -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <!-- Rate Status -->
+            <div id="rateStatusCard" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+                        <i class="fa-solid fa-calculator text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500">今日匯率狀態</div>
+                        <div id="rateStatusText" class="text-sm font-bold text-slate-700">更新中...</div>
+                    </div>
+                </div>
+                <button onclick="fetchLiveRates()" class="text-slate-400 hover:text-slate-600 text-xs flex items-center gap-1">
+                    <i class="fa-solid fa-rotate"></i> 重新抓取
+                </button>
+            </div>
+
+            <!-- Current User Badge -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-blue-50 text-blue-600 rounded-lg">
+                        <i class="fa-solid fa-user-gear text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500">當前編輯者身份</div>
+                        <div id="currentUserDisplay" class="text-sm font-bold text-slate-800">未設定 (預設: 訪客)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cloud Sync Trigger -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
+                        <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500">雲端最新資料同步</div>
+                        <div id="lastSyncTime" class="text-xs text-slate-600 font-medium">尚未進行同步</div>
+                    </div>
+                </div>
+                <button onclick="loadFromGitHub()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                    <i class="fa-solid fa-arrows-rotate"></i> 手動拉取最新
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Pane: Operations (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- 1. Trip Selection & Management -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h2 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
+                        <span><i class="fa-solid fa-folder-open text-blue-500 mr-2"></i>1. 旅行行程管理</span>
+                        <button onclick="openNewTripModal()" class="text-xs text-blue-600 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> 新增行程
+                        </button>
+                    </h2>
+                    <div class="flex gap-2">
+                        <select id="tripSelect" onchange="switchTrip(this.value)" class="flex-1 bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500">
+                        </select>
+                        <button onclick="deleteCurrentTrip()" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold rounded-lg transition border border-red-200">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Trip Members -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h2 class="text-sm font-bold text-slate-800 mb-3">
+                        <i class="fa-solid fa-users text-emerald-500 mr-2"></i>2. 旅行成員設定
+                    </h2>
+                    <div class="flex gap-2 mb-3">
+                        <input type="text" id="newMemberInput" placeholder="成員姓名 (如: Alice)" class="flex-1 bg-slate-50 border border-slate-300 text-sm rounded-lg p-2.5 focus:outline-none focus:border-blue-500">
+                        <button onclick="addMember()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm px-4 rounded-lg transition">
+                            新增成員
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap gap-2" id="memberTags">
+                        <!-- Member tags rendered here -->
+                    </div>
+                </div>
+
+                <!-- 3. Base Currency Selection -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h2 class="text-sm font-bold text-slate-800 mb-3">
+                        <i class="fa-solid fa-coins text-amber-500 mr-2"></i>3. 最終結算基準幣別
+                    </h2>
+                    <select id="baseCurrencySelect" onchange="changeBaseCurrency(this.value)" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-lg p-2.5 focus:ring-blue-500">
+                    </select>
+                </div>
+
+                <!-- 4. Add/Edit Expense Form -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h2 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
+                        <span id="formTitle"><i class="fa-solid fa-receipt text-indigo-500 mr-2"></i>4. 新增一筆消費帳單</span>
+                        <button id="cancelEditBtn" onclick="resetExpenseForm()" class="hidden text-xs text-slate-500 hover:text-slate-800">
+                            取消編輯
+                        </button>
+                    </h2>
+                    
+                    <form id="expenseForm" onsubmit="handleExpenseSubmit(event)" class="space-y-4">
+                        <input type="hidden" id="editingExpenseId" value="">
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">消費項目名稱</label>
+                            <input type="text" id="expTitle" placeholder="例如: 居酒屋晚餐, 景點門票" required class="w-full bg-slate-50 border border-slate-300 text-sm rounded-lg p-2.5 focus:ring-blue-500">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">金額</label>
+                                <input type="number" step="any" id="expAmount" placeholder="0.00" required class="w-full bg-slate-50 border border-slate-300 text-sm rounded-lg p-2.5 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">消費幣別</label>
+                                <select id="expCurrency" class="w-full bg-slate-50 border border-slate-300 text-sm rounded-lg p-2.5 focus:ring-blue-500">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">付款人</label>
+                            <select id="expPayer" required class="w-full bg-slate-50 border border-slate-300 text-sm rounded-lg p-2.5 focus:ring-blue-500">
+                            </select>
+                        </div>
+
+                        <button type="submit" id="submitExpBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm py-2.5 rounded-lg transition shadow-sm">
+                            <i class="fa-solid fa-plus-circle mr-1"></i> 加入帳單記錄
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- Right Pane: History, Settlements & Audit Log (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- 5. Smart Settlement Summary -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h2 class="text-sm font-bold text-slate-800 mb-1 flex items-center justify-between">
+                        <span><i class="fa-solid fa-chart-pie text-emerald-500 mr-2"></i>智慧結算結果</span>
+                        <span id="settlementBaseCurrencyBadge" class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1 rounded-full"></span>
+                    </h2>
+                    <p class="text-xs text-slate-500 mb-4">系統會根據各筆消費當時的匯率自動折算為基準幣別並公平平分</p>
+                    
+                    <div id="balancesContainer" class="space-y-3">
+                        <!-- Settlement balances list rendered here -->
+                    </div>
+                </div>
+
+                <!-- 6. Expense List -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h2 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
+                        <span><i class="fa-solid fa-list-check text-blue-500 mr-2"></i>歷史消費記錄</span>
+                        <span id="expenseCountBadge" class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">0 筆</span>
+                    </h2>
+
+                    <div id="expensesList" class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                        <!-- Expense items rendered here -->
+                    </div>
+                </div>
+
+                <!-- 7. Change History / Audit Log (Key Multi-user Feature) -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h2 class="text-sm font-bold text-slate-800 mb-2 flex items-center justify-between">
+                        <span><i class="fa-solid fa-clock-rotate-left text-purple-500 mr-2"></i>成員修改履歷 (共用紀錄)</span>
+                        <button onclick="clearHistoryLogs()" class="text-xs text-slate-400 hover:text-red-500">清除紀錄</button>
+                    </h2>
+                    <p class="text-xs text-slate-500 mb-3">記錄所有人對此行程進行的增加、編輯或刪除操作：</p>
+
+                    <div id="historyLogsList" class="space-y-2 max-h-56 overflow-y-auto text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <!-- History logs rendered here -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal 1: GitHub Settings -->
+    <div id="githubModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <button onclick="toggleModal('githubModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
+                <i class="fa-brands fa-github text-2xl"></i> GitHub 雲端共用設定
+            </h3>
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+                綁定 GitHub Repository 後，所有用戶皆可同步更新同份帳單資料，並保留完整修訂歷程。
+            </p>
+
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">GitHub Owner / 用戶名</label>
+                    <input type="text" id="ghOwner" placeholder="例如: your-github-username" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Repository 儲存庫名稱</label>
+                    <input type="text" id="ghRepo" placeholder="例如: travel-aa-data" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Personal Access Token (PAT 金鑰)</label>
+                    <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-blue-500">
+                    <p class="text-[10px] text-slate-400 mt-1">需具備 repo 存取權限。Token 僅會安全儲存於你本機瀏覽器的 LocalStorage。</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">檔案路徑 (預設可不改)</label>
+                    <input type="text" id="ghPath" value="travel_aa_data.json" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-blue-500">
+                </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-end gap-3">
+                <button onclick="toggleModal('githubModal')" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">取消</button>
+                <button onclick="saveGitHubSettings()" class="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition">儲存並測試連線</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: New Trip Modal -->
+    <div id="newTripModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
+            <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-plane text-blue-500 mr-2"></i>建立新旅行行程</h3>
+            <input type="text" id="newTripNameInput" placeholder="行程名稱 (例如: 關西賞楓七日遊)" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm mb-4 focus:ring-blue-500">
+            <div class="flex justify-end gap-2">
+                <button onclick="toggleModal('newTripModal')" class="px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">取消</button>
+                <button onclick="confirmCreateTrip()" class="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg">確認建立</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic Script -->
+    <script>
+        // --- Default Currencies Data ---
+        const DEFAULT_CURRENCIES = [
+            { name: "台幣 (TWD)", symbol: "NT$", code: "TWD", rateToTWD: 1.0 },
+            { name: "港幣 (HKD)", symbol: "HK$", code: "HKD", rateToTWD: 4.15 },
+            { name: "人民幣 (CNY)", symbol: "¥", code: "CNY", rateToTWD: 4.5 },
+            { name: "日圓 (JPY)", symbol: "¥", code: "JPY", rateToTWD: 0.21 },
+            { name: "美金 (USD)", symbol: "$", code: "USD", rateToTWD: 32.5 },
+            { name: "歐元 (EUR)", symbol: "€", code: "EUR", rateToTWD: 35.0 },
+            { name: "韓元 (KRW)", symbol: "₩", code: "KRW", rateToTWD: 0.024 }
+        ];
+
+        // --- App Global State ---
+        let appState = {
+            currentIndex: 0,
+            trips: [
+                {
+                    tripName: "預設旅行",
+                    people: ["Alice", "Bob"],
+                    expenses: [],
+                    baseCurrencyCode: "HKD",
+                    historyLogs: []
+                }
+            ]
+        };
+
+        let currencies = JSON.parse(JSON.stringify(DEFAULT_CURRENCIES));
+        let githubConfig = { owner: "", repo: "", token: "", path: "travel_aa_data.json", fileSha: "" };
+        let currentUser = localStorage.getItem("travel_aa_user") || "使用者";
+
+        // --- Init Function ---
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("usernameInput").value = currentUser;
+            updateUserDisplay();
+            loadGitHubConfigFromStorage();
+            fetchLiveRates();
+            
+            if (githubConfig.owner && githubConfig.repo && githubConfig.token) {
+                loadFromGitHub();
+            } else {
+                loadFromLocalStorage();
+                renderUI();
+            }
+        });
+
+        function saveUserProfile() {
+            const val = document.getElementById("usernameInput").value.trim();
+            currentUser = val || "使用者";
+            localStorage.setItem("travel_aa_user", currentUser);
+            updateUserDisplay();
+        }
+
+        function updateUserDisplay() {
+            document.getElementById("currentUserDisplay").textContent = currentUser;
+        }
+
+        // --- Live Currency Exchange Rates ---
+        async function fetchLiveRates() {
+            const statusEl = document.getElementById("rateStatusText");
+            try {
+                statusEl.textContent = "抓取最新匯率中...";
+                const res = await fetch("https://open.er-api.com/v6/latest/TWD");
+                const data = await res.json();
+                if (data && data.rates) {
+                    currencies.forEach(c => {
+                        if (data.rates[c.code] && data.rates[c.code] > 0) {
+                            c.rateToTWD = 1.0 / data.rates[c.code];
+                        }
+                    });
+                    statusEl.textContent = "已即時更新今日匯率";
+                    statusEl.className = "text-sm font-bold text-emerald-600";
+                }
+            } catch (err) {
+                statusEl.textContent = "使用預設預設匯率";
+                statusEl.className = "text-sm font-bold text-amber-600";
+            }
+            renderUI();
+        }
+
+        function getExchangeRate(fromCode, toCode) {
+            const fromC = currencies.find(c => c.code === fromCode) || currencies[0];
+            const toC = currencies.find(c => c.code === toCode) || currencies[0];
+            if (toC.rateToTWD === 0) return 1.0;
+            return fromC.rateToTWD / toC.rateToTWD;
+        }
+
+        // --- Helper Getters ---
+        function getCurrentTrip() {
+            if (appState.currentIndex < 0 || appState.currentIndex >= appState.trips.length) {
+                appState.currentIndex = 0;
+            }
+            return appState.trips[appState.currentIndex];
+        }
+
+        function getBaseCurrencyObj() {
+            const trip = getCurrentTrip();
+            return currencies.find(c => c.code === trip.baseCurrencyCode) || currencies[1];
+        }
+
+        // --- UI Rendering ---
+        function renderUI() {
+            const trip = getCurrentTrip();
+            const baseCurr = getBaseCurrencyObj();
+
+            // 1. Render Trip Dropdown
+            const tripSelect = document.getElementById("tripSelect");
+            tripSelect.innerHTML = appState.trips.map((t, idx) => 
+                `<option value="${idx}" ${idx === appState.currentIndex ? 'selected' : ''}>${t.tripName}</option>`
+            ).join("");
+
+            // 2. Render Member Tags
+            const memberTags = document.getElementById("memberTags");
+            if (!trip.people || trip.people.length === 0) {
+                memberTags.innerHTML = `<span class="text-xs text-slate-400">尚無成員</span>`;
+            } else {
+                memberTags.innerHTML = trip.people.map(p => `
+                    <span class="inline-flex items-center gap-1 bg-slate-100 border border-slate-200 text-slate-700 text-xs px-2.5 py-1 rounded-full font-medium">
+                        <i class="fa-solid fa-user-tag text-slate-400"></i> ${p}
+                        <button onclick="removeMember('${p}')" class="text-slate-400 hover:text-red-500 ml-1"><i class="fa-solid fa-xmark"></i></button>
+                    </span>
+                `).join("");
+            }
+
+            // 3. Render Base Currency Select
+            const baseCurrSelect = document.getElementById("baseCurrencySelect");
+            baseCurrSelect.innerHTML = currencies.map(c => 
+                `<option value="${c.code}" ${c.code === trip.baseCurrencyCode ? 'selected' : ''}>${c.name}</option>`
+            ).join("");
+
+            // 4. Render Form Currency & Payer Selects
+            const expCurrency = document.getElementById("expCurrency");
+            expCurrency.innerHTML = currencies.map(c => 
+                `<option value="${c.code}" ${c.code === "CNY" ? 'selected' : ''}>${c.name}</option>`
+            ).join("");
+
+            const expPayer = document.getElementById("expPayer");
+            if (trip.people && trip.people.length > 0) {
+                expPayer.innerHTML = trip.people.map(p => `<option value="${p}">${p}</option>`).join("");
+            } else {
+                expPayer.innerHTML = `<option value="">請先新增成員</option>`;
+            }
+
+            // 5. Render Expense List
+            document.getElementById("expenseCountBadge").textContent = `${trip.expenses.length} 筆`;
+            const expensesList = document.getElementById("expensesList");
+            if (trip.expenses.length === 0) {
+                expensesList.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs">目前尚無消費記錄</div>`;
+            } else {
+                expensesList.innerHTML = trip.expenses.map((exp) => {
+                    const rateText = `1 ${exp.currencyCode} = ${(exp.capturedRateToBase || 1).toFixed(4)} ${baseCurr.code}`;
+                    const editedText = exp.lastUpdatedBy ? `<span class="text-[10px] text-purple-600 block mt-0.5"><i class="fa-solid fa-pen-to-square"></i> 由 ${exp.lastUpdatedBy} 修改於 ${exp.lastUpdatedAt || ''}</span>` : '';
+                    return `
+                        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center justify-between hover:border-slate-300 transition">
+                            <div>
+                                <div class="text-sm font-bold text-slate-800">${exp.title}</div>
+                                <div class="text-xs text-slate-500 mt-0.5">
+                                    <span class="font-medium text-slate-700">付款人: ${exp.payer}</span> · ${rateText}
+                                </div>
+                                ${editedText}
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="text-right">
+                                    <div class="text-sm font-extrabold text-slate-800">${exp.currencySymbol} ${exp.amount}</div>
+                                    <div class="text-[10px] text-slate-400">≈ ${baseCurr.symbol} ${(exp.amount * exp.capturedRateToBase).toFixed(2)}</div>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="startEditExpense('${exp.id}')" class="p-1.5 text-slate-400 hover:text-blue-600 rounded">
+                                        <i class="fa-solid fa-pen text-xs"></i>
+                                    </button>
+                                    <button onclick="removeExpense('${exp.id}')" class="p-1.5 text-slate-400 hover:text-red-600 rounded">
+                                        <i class="fa-solid fa-trash text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+            }
+
+            // 6. Calculate & Render Settlement Balances
+            document.getElementById("settlementBaseCurrencyBadge").textContent = `結算基準: ${baseCurr.name}`;
+            renderSettlements();
+
+            // 7. Render Audit Logs
+            renderHistoryLogs();
+        }
+
+        // --- Settlement Balance Calculation ---
+        function renderSettlements() {
+            const trip = getCurrentTrip();
+            const baseCurr = getBaseCurrencyObj();
+            const container = document.getElementById("balancesContainer");
+
+            if (!trip.people || trip.people.length === 0) {
+                container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">請先新增成員以進行結算</div>`;
+                return;
+            }
+
+            // Initialize balances
+            const balances = {};
+            trip.people.forEach(p => balances[p] = 0.0);
+
+            // Calculate AA splitting
+            trip.expenses.forEach(exp => {
+                const amountInBase = exp.amount * (exp.capturedRateToBase || 1.0);
+                const splitPerPerson = amountInBase / trip.people.length;
+
+                if (balances.hasOwnProperty(exp.payer)) {
+                    balances[exp.payer] += amountInBase;
+                }
+                trip.people.forEach(p => {
+                    balances[p] -= splitPerPerson;
+                });
+            });
+
+            const sorted = Object.entries(balances).sort((a, b) => b[1] - a[1]);
+
+            container.innerHTML = sorted.map(([person, bal]) => {
+                let badgeClass = "";
+                let text = "";
+                if (bal > 0.01) {
+                    badgeClass = "text-emerald-600 bg-emerald-50 border-emerald-200";
+                    text = `應收 ${baseCurr.symbol} ${Math.abs(bal).toFixed(2)}`;
+                } else if (bal < -0.01) {
+                    badgeClass = "text-red-600 bg-red-50 border-red-200";
+                    text = `應付 ${baseCurr.symbol} ${Math.abs(bal).toFixed(2)}`;
+                } else {
+                    badgeClass = "text-slate-500 bg-slate-50 border-slate-200";
+                    text = "已結清 (±0)";
+                }
+
+                return `
+                    <div class="flex items-center justify-between p-3 rounded-lg border bg-slate-50/50">
+                        <span class="text-sm font-bold text-slate-800"><i class="fa-solid fa-user-circle text-slate-400 mr-2"></i>${person}</span>
+                        <span class="text-xs font-extrabold px-3 py-1 rounded-full border ${badgeClass}">${text}</span>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        // --- Audit Log History ---
+        function logChange(actionDetail) {
+            const trip = getCurrentTrip();
+            if (!trip.historyLogs) trip.historyLogs = [];
+            
+            const now = new Date();
+            const timeStr = `${now.getMonth()+1}/${now.getDate()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+            
+            trip.historyLogs.unshift({
+                timestamp: timeStr,
+                user: currentUser,
+                action: actionDetail
+            });
+
+            // Keep max 50 log items
+            if (trip.historyLogs.length > 50) trip.historyLogs.pop();
+        }
+
+        function renderHistoryLogs() {
+            const trip = getCurrentTrip();
+            const container = document.getElementById("historyLogsList");
+            const logs = trip.historyLogs || [];
+
+            if (logs.length === 0) {
+                container.innerHTML = `<div class="text-slate-400 text-[11px] text-center py-2">尚無變更履歷</div>`;
+                return;
+            }
+
+            container.innerHTML = logs.map(log => `
+                <div class="flex items-start justify-between border-b border-slate-200 pb-1.5 pt-0.5">
+                    <div>
+                        <span class="font-bold text-slate-700 mr-1.5">[${log.user}]</span>
+                        <span class="text-slate-600">${log.action}</span>
+                    </div>
+                    <span class="text-[10px] text-slate-400 whitespace-nowrap ml-2">${log.timestamp}</span>
+                </div>
+            `).join("");
+        }
+
+        function clearHistoryLogs() {
+            const trip = getCurrentTrip();
+            trip.historyLogs = [];
+            saveAndSyncData("清空了歷史紀錄");
+        }
+
+        // --- Expense Operations (Add/Edit/Delete) ---
+        function handleExpenseSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById("editingExpenseId").value;
+            const title = document.getElementById("expTitle").value.trim();
+            const amount = parseFloat(document.getElementById("expAmount").value);
+            const currencyCode = document.getElementById("expCurrency").value;
+            const payer = document.getElementById("expPayer").value;
+
+            if (!title || isNaN(amount) || amount <= 0 || !payer) {
+                alert("請完整填寫項目名稱、有效金額與付款人");
+                return;
+            }
+
+            const trip = getCurrentTrip();
+            const baseCurr = getBaseCurrencyObj();
+            const currObj = currencies.find(c => c.code === currencyCode) || currencies[0];
+            const rateToBase = getExchangeRate(currObj.code, baseCurr.code);
+
+            const nowStr = new Date().toLocaleString();
+
+            if (editId) {
+                // Update Existing Expense
+                const expIndex = trip.expenses.findIndex(x => x.id === editId);
+                if (expIndex !== -1) {
+                    const oldExp = trip.expenses[expIndex];
+                    trip.expenses[expIndex] = {
+                        ...oldExp,
+                        title,
+                        amount,
+                        currencyCode: currObj.code,
+                        currencySymbol: currObj.symbol,
+                        payer,
+                        capturedRateToBase: rateToBase,
+                        lastUpdatedBy: currentUser,
+                        lastUpdatedAt: nowStr
+                    };
+                    logChange(`修改了帳單「${title}」(${currObj.symbol}${amount})`);
+                }
+            } else {
+                // Add New Expense
+                const newExp = {
+                    id: "exp_" + Date.now() + "_" + Math.random().toString(36).substr(2,4),
+                    title,
+                    amount,
+                    currencyCode: currObj.code,
+                    currencySymbol: currObj.symbol,
+                    payer,
+                    capturedRateToBase: rateToBase,
+                    createdBy: currentUser,
+                    createdAt: nowStr
+                };
+                trip.expenses.push(newExp);
+                logChange(`新增了帳單「${title}」(${currObj.symbol}${amount}, 付款人: ${payer})`);
+            }
+
+            resetExpenseForm();
+            saveAndSyncData(editId ? `更新帳單: ${title}` : `新增帳單: ${title}`);
+        }
+
+        function startEditExpense(id) {
+            const trip = getCurrentTrip();
+            const exp = trip.expenses.find(x => x.id === id);
+            if (!exp) return;
+
+            document.getElementById("editingExpenseId").value = exp.id;
+            document.getElementById("expTitle").value = exp.title;
+            document.getElementById("expAmount").value = exp.amount;
+            document.getElementById("expCurrency").value = exp.currencyCode;
+            document.getElementById("expPayer").value = exp.payer;
+
+            document.getElementById("formTitle").innerHTML = `<i class="fa-solid fa-pen-to-square text-purple-500 mr-2"></i>編輯帳單項目`;
+            document.getElementById("submitExpBtn").innerHTML = `<i class="fa-solid fa-check-circle mr-1"></i> 儲存修訂內容`;
+            document.getElementById("cancelEditBtn").classList.remove("hidden");
+        }
+
+        function resetExpenseForm() {
+            document.getElementById("editingExpenseId").value = "";
+            document.getElementById("expenseForm").reset();
+            document.getElementById("formTitle").innerHTML = `<i class="fa-solid fa-receipt text-indigo-500 mr-2"></i>4. 新增一筆消費帳單`;
+            document.getElementById("submitExpBtn").innerHTML = `<i class="fa-solid fa-plus-circle mr-1"></i> 加入帳單記錄`;
+            document.getElementById("cancelEditBtn").classList.add("hidden");
+        }
+
+        function removeExpense(id) {
+            const trip = getCurrentTrip();
+            const exp = trip.expenses.find(x => x.id === id);
+            if (!exp) return;
+
+            if (confirm(`確定要刪除「${exp.title}」這筆帳單嗎？`)) {
+                trip.expenses = trip.expenses.filter(x => x.id !== id);
+                logChange(`刪除了帳單「${exp.title}」`);
+                saveAndSyncData(`刪除帳單: ${exp.title}`);
+            }
+        }
+
+        // --- Trip & Member Management ---
+        function switchTrip(idx) {
+            appState.currentIndex = parseInt(idx);
+            resetExpenseForm();
+            renderUI();
+        }
+
+        function openNewTripModal() {
+            toggleModal("newTripModal");
+        }
+
+        function confirmCreateTrip() {
+            const nameInput = document.getElementById("newTripNameInput");
+            const val = nameInput.value.trim();
+            if (!val) return;
+
+            appState.trips.push({
+                tripName: val,
+                people: [currentUser],
+                expenses: [],
+                baseCurrencyCode: "HKD",
+                historyLogs: []
+            });
+            appState.currentIndex = appState.trips.length - 1;
+            
+            logChange(`建立了新行程「${val}」`);
+            nameInput.value = "";
+            toggleModal("newTripModal");
+            saveAndSyncData(`新增行程: ${val}`);
+        }
+
+        function deleteCurrentTrip() {
+            const trip = getCurrentTrip();
+            if (confirm(`確定要刪除行程「${trip.tripName}」及其所有資料嗎？`)) {
+                if (appState.trips.length > 1) {
+                    appState.trips.splice(appState.currentIndex, 1);
+                    appState.currentIndex = Math.max(0, appState.currentIndex - 1);
+                } else {
+                    appState.trips[0] = {
+                        tripName: "預設旅行",
+                        people: [],
+                        expenses: [],
+                        baseCurrencyCode: "HKD",
+                        historyLogs: []
+                    };
+                }
+                saveAndSyncData(`刪除行程: ${trip.tripName}`);
+            }
+        }
+
+        function addMember() {
+            const input = document.getElementById("newMemberInput");
+            const name = input.value.trim();
+            const trip = getCurrentTrip();
+
+            if (name && !trip.people.includes(name)) {
+                trip.people.push(name);
+                logChange(`新增了成員「${name}」`);
+                input.value = "";
+                saveAndSyncData(`新增成員: ${name}`);
+            }
+        }
+
+        function removeMember(name) {
+            const trip = getCurrentTrip();
+            if (confirm(`確定刪除成員「${name}」嗎？`)) {
+                trip.people = trip.people.filter(p => p !== name);
+                logChange(`刪除了成員「${name}」`);
+                saveAndSyncData(`刪除成員: ${name}`);
+            }
+        }
+
+        function changeBaseCurrency(code) {
+            const trip = getCurrentTrip();
+            trip.baseCurrencyCode = code;
+            logChange(`變更結算幣別為 ${code}`);
+            saveAndSyncData(`變更基準幣別: ${code}`);
+        }
+
+        // --- Data Persistence & GitHub Sync Engine ---
+        function loadFromLocalStorage() {
+            const data = localStorage.getItem("travel_aa_local_data");
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (parsed.trips) appState = parsed;
+                } catch(e) {}
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem("travel_aa_local_data", JSON.stringify(appState));
+        }
+
+        function saveAndSyncData(commitMessage = "Update travel AA data") {
+            saveToLocalStorage();
+            renderUI();
+
+            if (githubConfig.owner && githubConfig.repo && githubConfig.token) {
+                uploadToGitHub(`${currentUser}: ${commitMessage}`);
+            }
+        }
+
+        // --- GitHub REST API Handlers ---
+        function loadGitHubConfigFromStorage() {
+            const saved = localStorage.getItem("travel_aa_github_config");
+            if (saved) {
+                try {
+                    githubConfig = JSON.parse(saved);
+                    document.getElementById("ghOwner").value = githubConfig.owner || "";
+                    document.getElementById("ghRepo").value = githubConfig.repo || "";
+                    document.getElementById("ghToken").value = githubConfig.token || "";
+                    document.getElementById("ghPath").value = githubConfig.path || "travel_aa_data.json";
+                } catch(e) {}
+            }
+            updateSyncStatusBadge();
+        }
+
+        function saveGitHubSettings() {
+            githubConfig.owner = document.getElementById("ghOwner").value.trim();
+            githubConfig.repo = document.getElementById("ghRepo").value.trim();
+            githubConfig.token = document.getElementById("ghToken").value.trim();
+            githubConfig.path = document.getElementById("ghPath").value.trim() || "travel_aa_data.json";
+
+            localStorage.setItem("travel_aa_github_config", JSON.stringify(githubConfig));
+            toggleModal("githubModal");
+            loadFromGitHub();
+        }
+
+        function updateSyncStatusBadge(status = "none", text = "") {
+            const badge = document.getElementById("syncStatus");
+            if (status === "syncing") {
+                badge.className = "flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg bg-blue-950 text-blue-400 border border-blue-800";
+                badge.innerHTML = `<i class="fa-solid fa-sync fa-spin mr-1.5"></i> ${text || '雲端同步中...'}`;
+            } else if (status === "success") {
+                badge.className = "flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-800";
+                badge.innerHTML = `<i class="fa-solid fa-cloud-check mr-1.5"></i> ${text || '已同步至 GitHub'}`;
+            } else if (status === "error") {
+                badge.className = "flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-950 text-red-400 border border-red-800";
+                badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> ${text || '同步失敗'}`;
+            } else {
+                badge.className = "flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 text-amber-400 border border-slate-700";
+                badge.innerHTML = `<i class="fa-solid fa-plug mr-1.5"></i> 尚未設定 GitHub`;
+            }
+        }
+
+        async function loadFromGitHub() {
+            if (!githubConfig.owner || !githubConfig.repo || !githubConfig.token) return;
+
+            updateSyncStatusBadge("syncing", "讀取雲端資料...");
+            const url = `https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.path}`;
+
+            try {
+                const res = await fetch(url, {
+                    headers: {
+                        "Authorization": `Bearer ${githubConfig.token}`,
+                        "Accept": "application/vnd.github.v3+json"
+                    }
+                });
+
+                if (res.status === 404) {
+                    // File doesn't exist yet, upload current initial state
+                    updateSyncStatusBadge("syncing", "建立雲端資料檔...");
+                    await uploadToGitHub("初始化 GitHub Travel AA 雲端帳單");
+                    return;
+                }
+
+                if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+
+                const fileData = await res.json();
+                githubConfig.fileSha = fileData.sha; // Save SHA for updates
+
+                // UTF-8 Base64 Decode
+                const jsonText = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+                const remoteState = JSON.parse(jsonText);
+
+                if (remoteState && remoteState.trips) {
+                    appState = remoteState;
+                    saveToLocalStorage();
+                    renderUI();
+                    
+                    const timeStr = new Date().toLocaleTimeString();
+                    document.getElementById("lastSyncTime").textContent = `上次同步: ${timeStr}`;
+                    updateSyncStatusBadge("success", "已載入 GitHub 最新版");
+                }
+            } catch (err) {
+                console.error("GitHub Fetch Error:", err);
+                updateSyncStatusBadge("error", "GitHub 讀取失敗");
+            }
+        }
+
+        async function uploadToGitHub(commitMsg) {
+            if (!githubConfig.owner || !githubConfig.repo || !githubConfig.token) return;
+
+            updateSyncStatusBadge("syncing", "上傳修改至 GitHub...");
+            const url = `https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.path}`;
+
+            try {
+                // Ensure we have current file SHA if missing
+                if (!githubConfig.fileSha) {
+                    const checkRes = await fetch(url, {
+                        headers: { "Authorization": `Bearer ${githubConfig.token}` }
+                    });
+                    if (checkRes.ok) {
+                        const checkData = await checkRes.json();
+                        githubConfig.fileSha = checkData.sha;
+                    }
+                }
+
+                // UTF-8 Base64 Encode
+                const jsonString = JSON.stringify(appState, null, 2);
+                const contentEncoded = btoa(unescape(encodeURIComponent(jsonString)));
+
+                const bodyPayload = {
+                    message: commitMsg,
+                    content: contentEncoded,
+                    branch: "main"
+                };
+                if (githubConfig.fileSha) {
+                    bodyPayload.sha = githubConfig.fileSha;
+                }
+
+                const res = await fetch(url, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${githubConfig.token}`,
+                        "Content-Type": "application/json",
+                        "Accept": "application/vnd.github.v3+json"
+                    },
+                    body: JSON.stringify(bodyPayload)
+                });
+
+                if (!res.ok) throw new Error(`Upload error status ${res.status}`);
+
+                const resultData = await res.json();
+                githubConfig.fileSha = resultData.content.sha;
+
+                const timeStr = new Date().toLocaleTimeString();
+                document.getElementById("lastSyncTime").textContent = `上次上傳: ${timeStr}`;
+                updateSyncStatusBadge("success", "同步成功");
+            } catch (err) {
+                console.error("GitHub Upload Error:", err);
+                updateSyncStatusBadge("error", "GitHub 上傳失敗");
+            }
+        }
+
+        // --- Helper UI Modal Toggle ---
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal.classList.contains("hidden")) {
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+            } else {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+            }
+        }
+    </script>
+</body>
+</html>
+'''
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(code)
+
+print("Generated index.html successfully.")
