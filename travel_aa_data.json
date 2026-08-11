@@ -1,5 +1,5 @@
 {
-  "currentIndex": 0,
+  "currentIndex": 1,
   "trips": [
     {
       "tripName": "預設旅行",
@@ -10,6 +10,21 @@
       "expenses": [],
       "baseCurrencyCode": "HKD",
       "historyLogs": []
+    },
+    {
+      "tripName": "TEST",
+      "people": [
+        "Kim"
+      ],
+      "expenses": [],
+      "baseCurrencyCode": "HKD",
+      "historyLogs": [
+        {
+          "timestamp": "8/11 20:28",
+          "user": "Kim",
+          "action": "建立了新行程「TEST」"
+        }
+      ]
     }
   ]
 }
