@@ -116,11 +116,17 @@
         "Camy",
         "Ragen",
         "Ivan",
-        "2po"
+        "2po",
+        "Yeah yeah"
       ],
       "expenses": [],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/11 22:44",
+          "user": "Camy",
+          "action": "新增了成員「Yeah yeah」"
+        },
         {
           "timestamp": "8/11 22:44",
           "user": "Camy",
