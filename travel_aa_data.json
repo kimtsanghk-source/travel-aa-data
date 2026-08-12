@@ -14,25 +14,6 @@
       ],
       "expenses": [
         {
-          "id": "exp_1786459517344_0amv",
-          "title": "橫濱dinner charge",
-          "amount": 880,
-          "currencyCode": "JPY",
-          "currencySymbol": "¥",
-          "payer": "Camy",
-          "participants": [
-            "Camy",
-            "Ragen",
-            "Ivan",
-            "2po",
-            "Yeah yeah",
-            "6b"
-          ],
-          "capturedRateToBase": 0.049470395835972895,
-          "createdBy": "Camy",
-          "createdAt": "11/08/2026, 22:45:17"
-        },
-        {
           "id": "exp_1786459793584_r5gl",
           "title": "水陸巴士",
           "amount": 18000,
@@ -73,6 +54,11 @@
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/12 10:35",
+          "user": "使用者",
+          "action": "刪除了帳單「橫濱dinner charge」"
+        },
         {
           "timestamp": "8/12 10:35",
           "user": "使用者",
