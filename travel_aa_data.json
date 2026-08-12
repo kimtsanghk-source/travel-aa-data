@@ -50,10 +50,34 @@
           "capturedRateToBase": 0.049470395835972895,
           "createdBy": "Camy",
           "createdAt": "11/08/2026, 22:49:53"
+        },
+        {
+          "id": "exp_1786502121684_tgu2",
+          "title": "橫濱dinner charge",
+          "amount": 880,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Camy",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "小白🐶"
+          ],
+          "capturedRateToBase": 0.04926260517297631,
+          "createdBy": "使用者",
+          "createdAt": "12/08/2026, 10:35:21"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/12 10:35",
+          "user": "使用者",
+          "action": "新增了帳單「橫濱dinner charge」(¥880, 付款人: Camy, 6人平分)"
+        },
         {
           "timestamp": "8/12 10:33",
           "user": "使用者",
