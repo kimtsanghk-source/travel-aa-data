@@ -69,10 +69,34 @@
           "capturedRateToBase": 0.04926260517297631,
           "createdBy": "Chucky",
           "createdAt": "8/12/2026, 9:58:15 AM"
+        },
+        {
+          "id": "exp_1786499937713_xpi3",
+          "title": "Lunch",
+          "amount": 58009,
+          "currencyCode": "CNY",
+          "currencySymbol": "¥",
+          "payer": "6b",
+          "participants": [
+            "Camy",
+            "Ragen",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "Maggie"
+          ],
+          "capturedRateToBase": 1.162378223495702,
+          "createdBy": "Chucky",
+          "createdAt": "8/12/2026, 9:58:57 AM"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/12 09:58",
+          "user": "Chucky",
+          "action": "新增了帳單「Lunch」(¥58009, 付款人: 6b, 6人平分)"
+        },
         {
           "timestamp": "8/12 09:58",
           "user": "Chucky",
