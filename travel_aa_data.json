@@ -9,7 +9,8 @@
         "2po",
         "Yeah yeah",
         "6b",
-        "Maggie"
+        "Maggie",
+        "小白🐶"
       ],
       "expenses": [
         {
@@ -75,6 +76,11 @@
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/12 10:33",
+          "user": "使用者",
+          "action": "新增了成員「小白🐶」"
+        },
         {
           "timestamp": "8/12 10:32",
           "user": "使用者",
