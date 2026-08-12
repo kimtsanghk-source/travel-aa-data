@@ -5,7 +5,6 @@
       "tripName": "Tokyo",
       "people": [
         "Camy",
-        "Ragen",
         "Ivan",
         "2po",
         "Yeah yeah",
@@ -76,6 +75,11 @@
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/12 10:32",
+          "user": "使用者",
+          "action": "刪除了成員「Ragen」"
+        },
         {
           "timestamp": "8/12 09:59",
           "user": "Chucky",
