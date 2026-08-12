@@ -50,10 +50,34 @@
           "capturedRateToBase": 0.049470395835972895,
           "createdBy": "Camy",
           "createdAt": "11/08/2026, 22:49:53"
+        },
+        {
+          "id": "exp_1786499895104_4gmq",
+          "title": "早餐",
+          "amount": 49000,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "6b",
+          "participants": [
+            "Camy",
+            "Ragen",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "Maggie"
+          ],
+          "capturedRateToBase": 0.04926260517297631,
+          "createdBy": "Chucky",
+          "createdAt": "8/12/2026, 9:58:15 AM"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/12 09:58",
+          "user": "Chucky",
+          "action": "新增了帳單「早餐」(¥49000, 付款人: 6b, 6人平分)"
+        },
         {
           "timestamp": "8/11 22:49",
           "user": "Camy",
