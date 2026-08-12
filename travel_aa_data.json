@@ -55,24 +55,32 @@
           "id": "exp_1786499895104_4gmq",
           "title": "早餐",
           "amount": 49000,
-          "currencyCode": "JPY",
+          "currencyCode": "CNY",
           "currencySymbol": "¥",
-          "payer": "6b",
+          "payer": "Camy",
           "participants": [
             "Camy",
             "Ragen",
             "Ivan",
             "2po",
             "Yeah yeah",
+            "6b",
             "Maggie"
           ],
-          "capturedRateToBase": 0.04926260517297631,
+          "capturedRateToBase": 1.162378223495702,
           "createdBy": "Chucky",
-          "createdAt": "8/12/2026, 9:58:15 AM"
+          "createdAt": "8/12/2026, 9:58:15 AM",
+          "lastUpdatedBy": "Chucky",
+          "lastUpdatedAt": "8/12/2026, 9:59:53 AM"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/12 09:59",
+          "user": "Chucky",
+          "action": "修改了帳單「早餐」(¥49000, 7人平分)"
+        },
         {
           "timestamp": "8/12 09:59",
           "user": "Chucky",
