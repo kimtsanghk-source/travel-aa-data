@@ -50,32 +50,15 @@
           "capturedRateToBase": 0.049470395835972895,
           "createdBy": "Camy",
           "createdAt": "11/08/2026, 22:49:53"
-        },
-        {
-          "id": "exp_1786499895104_4gmq",
-          "title": "早餐",
-          "amount": 49000,
-          "currencyCode": "CNY",
-          "currencySymbol": "¥",
-          "payer": "Camy",
-          "participants": [
-            "Camy",
-            "Ragen",
-            "Ivan",
-            "2po",
-            "Yeah yeah",
-            "6b",
-            "Maggie"
-          ],
-          "capturedRateToBase": 1.162378223495702,
-          "createdBy": "Chucky",
-          "createdAt": "8/12/2026, 9:58:15 AM",
-          "lastUpdatedBy": "Chucky",
-          "lastUpdatedAt": "8/12/2026, 9:59:53 AM"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/12 10:33",
+          "user": "使用者",
+          "action": "刪除了帳單「早餐」"
+        },
         {
           "timestamp": "8/12 10:33",
           "user": "使用者",
