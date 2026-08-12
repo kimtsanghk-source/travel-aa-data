@@ -31,30 +31,15 @@
           "capturedRateToBase": 0.04926260517297631,
           "createdBy": "使用者",
           "createdAt": "12/08/2026, 10:35:21"
-        },
-        {
-          "id": "exp_1786502221833_9pfc",
-          "title": "水陸巴士",
-          "amount": 18000,
-          "currencyCode": "CNY",
-          "currencySymbol": "¥",
-          "payer": "Camy",
-          "participants": [
-            "Camy",
-            "Ivan",
-            "2po",
-            "Yeah yeah",
-            "6b",
-            "Maggie",
-            "小白🐶"
-          ],
-          "capturedRateToBase": 1.162378223495702,
-          "createdBy": "小白🐶",
-          "createdAt": "12/08/2026, 10:37:01"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/12 10:37",
+          "user": "小白🐶",
+          "action": "刪除了帳單「水陸巴士」"
+        },
         {
           "timestamp": "8/12 10:37",
           "user": "小白🐶",
