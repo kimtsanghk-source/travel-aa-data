@@ -90,10 +90,35 @@
           "capturedRateToBase": 0.049421025600307145,
           "createdBy": "Camy",
           "createdAt": "20/08/2026, 22:00:10"
+        },
+        {
+          "id": "exp_1787230943036_1i9b",
+          "title": "柑",
+          "amount": 358,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Ivan",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "Maggie",
+            "小白🐶"
+          ],
+          "capturedRateToBase": 0.049421025600307145,
+          "createdBy": "Camy",
+          "createdAt": "20/08/2026, 22:02:23"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/20 22:02",
+          "user": "Camy",
+          "action": "新增了帳單「柑」(¥358, 付款人: Ivan, 7人平分)"
+        },
         {
           "timestamp": "8/20 22:00",
           "user": "Camy",
