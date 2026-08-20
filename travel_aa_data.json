@@ -50,10 +50,35 @@
           "capturedRateToBase": 0.04926260517297631,
           "createdBy": "小白🐶",
           "createdAt": "12/08/2026, 10:37:31"
+        },
+        {
+          "id": "exp_1787230336446_0k4g",
+          "title": "宵夜",
+          "amount": 2284,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Camy",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "Maggie",
+            "小白🐶"
+          ],
+          "capturedRateToBase": 0.049421025600307145,
+          "createdBy": "Camy",
+          "createdAt": "20/08/2026, 21:52:16"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/20 21:52",
+          "user": "Camy",
+          "action": "新增了帳單「宵夜」(¥2284, 付款人: Camy, 7人平分)"
+        },
         {
           "timestamp": "8/12 10:37",
           "user": "小白🐶",
