@@ -110,10 +110,34 @@
           "capturedRateToBase": 0.049421025600307145,
           "createdBy": "Camy",
           "createdAt": "20/08/2026, 22:02:23"
+        },
+        {
+          "id": "exp_1787268220052_ly3o",
+          "title": "百合海鷗號",
+          "amount": 4920,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Ivan",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "Maggie"
+          ],
+          "capturedRateToBase": 0.049421025600307145,
+          "createdBy": "Camy",
+          "createdAt": "21/8/2026 上午8:23:40"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/21 08:23",
+          "user": "Camy",
+          "action": "新增了帳單「百合海鷗號」(¥4920, 付款人: Ivan, 6人平分)"
+        },
         {
           "timestamp": "8/20 22:02",
           "user": "Camy",
