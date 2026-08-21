@@ -149,10 +149,35 @@
           "capturedRateToBase": 0.04940785901353428,
           "createdBy": "Camy",
           "createdAt": "21/8/2026 上午9:46:04"
+        },
+        {
+          "id": "exp_1787309332353_jtt7",
+          "title": "Supermarket",
+          "amount": 1258,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Ivan",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "Maggie",
+            "小白🐶"
+          ],
+          "capturedRateToBase": 0.04940785901353428,
+          "createdBy": "Camy",
+          "createdAt": "21/8/2026 下午7:48:52"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/21 19:48",
+          "user": "Camy",
+          "action": "新增了帳單「Supermarket」(¥1258, 付款人: Ivan, 7人平分)"
+        },
         {
           "timestamp": "8/21 09:46",
           "user": "Camy",
