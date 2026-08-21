@@ -169,10 +169,29 @@
           "capturedRateToBase": 0.04940785901353428,
           "createdBy": "Camy",
           "createdAt": "21/8/2026 下午7:48:52"
+        },
+        {
+          "id": "exp_1787325337309_wzwu",
+          "title": "Taxi",
+          "amount": 6000,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Maggie",
+          "participants": [
+            "Camy"
+          ],
+          "capturedRateToBase": 0.04940785901353428,
+          "createdBy": "Camy",
+          "createdAt": "22/8/2026 上午12:15:37"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/22 00:15",
+          "user": "Camy",
+          "action": "新增了帳單「Taxi」(¥6000, 付款人: Maggie, 1人平分)"
+        },
         {
           "timestamp": "8/21 19:48",
           "user": "Camy",
