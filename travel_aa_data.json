@@ -129,10 +129,35 @@
           "capturedRateToBase": 0.049421025600307145,
           "createdBy": "Camy",
           "createdAt": "21/8/2026 上午8:23:40"
+        },
+        {
+          "id": "exp_1787273164564_ymhc",
+          "title": "巨峰",
+          "amount": 1200,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Ivan",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "Maggie",
+            "小白🐶"
+          ],
+          "capturedRateToBase": 0.04940785901353428,
+          "createdBy": "Camy",
+          "createdAt": "21/8/2026 上午9:46:04"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/21 09:46",
+          "user": "Camy",
+          "action": "新增了帳單「巨峰」(¥1200, 付款人: Ivan, 7人平分)"
+        },
         {
           "timestamp": "8/21 08:23",
           "user": "Camy",
