@@ -203,10 +203,35 @@
           "capturedRateToBase": 0.04934466743628274,
           "createdBy": "Camy",
           "createdAt": "22/8/2026 下午5:43:33"
+        },
+        {
+          "id": "exp_1787390055549_z1nq",
+          "title": "Ice",
+          "amount": 6080,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Ivan",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "Maggie",
+            "小白🐶"
+          ],
+          "capturedRateToBase": 0.04934466743628274,
+          "createdBy": "Camy",
+          "createdAt": "22/8/2026 下午6:14:15"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/22 18:14",
+          "user": "Camy",
+          "action": "新增了帳單「Ice」(¥6080, 付款人: Ivan, 7人平分)"
+        },
         {
           "timestamp": "8/22 17:43",
           "user": "Camy",
