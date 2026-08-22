@@ -183,10 +183,35 @@
           "capturedRateToBase": 0.04940785901353428,
           "createdBy": "Camy",
           "createdAt": "22/8/2026 上午12:15:37"
+        },
+        {
+          "id": "exp_1787388213621_2kba",
+          "title": "Double doors",
+          "amount": 15500,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Ivan",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "Maggie",
+            "小白🐶"
+          ],
+          "capturedRateToBase": 0.04934466743628274,
+          "createdBy": "Camy",
+          "createdAt": "22/8/2026 下午5:43:33"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/22 17:43",
+          "user": "Camy",
+          "action": "新增了帳單「Double doors」(¥15500, 付款人: Ivan, 7人平分)"
+        },
         {
           "timestamp": "8/22 00:15",
           "user": "Camy",
