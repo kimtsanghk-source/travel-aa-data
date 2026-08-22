@@ -223,10 +223,35 @@
           "capturedRateToBase": 0.04934466743628274,
           "createdBy": "Camy",
           "createdAt": "22/8/2026 下午6:14:15"
+        },
+        {
+          "id": "exp_1787403883615_bjsk",
+          "title": "無添壽司",
+          "amount": 24120,
+          "currencyCode": "JPY",
+          "currencySymbol": "¥",
+          "payer": "Ivan",
+          "participants": [
+            "Camy",
+            "Ivan",
+            "2po",
+            "Yeah yeah",
+            "6b",
+            "Maggie",
+            "小白🐶"
+          ],
+          "capturedRateToBase": 0.04934466743628274,
+          "createdBy": "Camy",
+          "createdAt": "22/8/2026 下午10:04:43"
         }
       ],
       "baseCurrencyCode": "HKD",
       "historyLogs": [
+        {
+          "timestamp": "8/22 22:04",
+          "user": "Camy",
+          "action": "新增了帳單「無添壽司」(¥24120, 付款人: Ivan, 7人平分)"
+        },
         {
           "timestamp": "8/22 18:14",
           "user": "Camy",
